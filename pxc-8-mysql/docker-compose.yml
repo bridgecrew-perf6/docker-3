@@ -1,0 +1,49 @@
+version: "3.8"
+services:
+  ssl-self-signed:
+    init: true
+    container_name: ssl-self-signed
+    hostname: ssl-self-signed
+    image: percona/percona-xtradb-cluster:8.0
+    volumes:
+      - ./config:/cert
+    command: mysql_ssl_rsa_setup -d /cert
+    networks: 
+      - pxc-network
+    
+  pxc-node-1:
+    container_name: pxc-node-1
+    hostname: pxc-node-1
+    image: percona/percona-xtradb-cluster:8.0
+    environment: 
+      - MYSQL_ROOT_PASSWORD=root
+      - CLUSTER_NAME=pxc-mysql
+    security_opt:
+      - seccomp:unconfined
+    volumes:
+      - ./config:/cert
+      - ./config:/etc/percona-xtradb-cluster.conf.d
+      - ./config/grastate.dat:/var/lib/mysql/grastate.dat
+    networks: 
+      - pxc-network
+
+  pxc-node-2:
+    container_name: pxc-node-2
+    hostname: pxc-node-2
+    image: percona/percona-xtradb-cluster:8.0
+    environment: 
+      - MYSQL_ROOT_PASSWORD=root
+      - CLUSTER_JOIN=pxc-node-1
+      - CLUSTER_NAME=pxc-mysql
+    security_opt:
+      - seccomp:unconfined
+    volumes:
+      - ./config:/cert
+      - ./config:/etc/percona-xtradb-cluster.conf.d
+    networks: 
+      - pxc-network
+
+      
+networks: 
+  pxc-network:
+    driver: bridge
