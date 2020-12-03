@@ -23,7 +23,6 @@ services:
     volumes:
       - ./config:/cert
       - ./config:/etc/percona-xtradb-cluster.conf.d
-      - ./config/grastate.dat:/var/lib/mysql/grastate.dat
     networks: 
       - pxc-network
 
@@ -43,7 +42,7 @@ services:
     networks: 
       - pxc-network
 
-      
+
 networks: 
   pxc-network:
     driver: bridge
