@@ -1,2 +1,2 @@
 pxc-8-mysql/config/*.pem
-pxc-8-mysql/config/*.dat
+pxc-8-mysql/config/grastate.dat
